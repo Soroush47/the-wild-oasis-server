@@ -48,3 +48,38 @@ exports.createManyBookings = async data => {
         data: data,
     });
 };
+
+exports.getBooking = async id => {
+    return await prisma.booking.findUnique({
+        where: { id },
+        select: {
+            id: true,
+            createdAt: true,
+            startDate: true,
+            endDate: true,
+            numNights: true,
+            numGuests: true,
+            status: true,
+            cabinPrice: true,
+            extrasPrice: true,
+            totalPrice: true,
+            hasBreakfast: true,
+            observations: true,
+            isPaid: true,
+            cabin: {
+                select: {
+                    name: true,
+                },
+            },
+            guest: {
+                select: {
+                    fullName: true,
+                    email: true,
+                    nationality: true,
+                    countryFlag: true,
+                    nationalID: true,
+                },
+            },
+        },
+    });
+};

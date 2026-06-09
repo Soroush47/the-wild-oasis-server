@@ -61,3 +61,16 @@ exports.createManyBookings = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.getBooking = async (req, res, next) => {
+    const bookingId = parseInt(req.params.id);
+    try {
+        const result = await bookingService.getBooking(bookingId);
+        res.status(200).json(result);
+    } catch (error) {
+        if (!error.status) {
+            error.status = 500;
+        }
+        next(error);
+    }
+};
