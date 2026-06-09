@@ -2,7 +2,10 @@ const bookingService = require("../services/bookingService");
 
 exports.getAllBookings = async (req, res, next) => {
     try {
-        const { status, sortBy } = req.query;
+        const { status, sortBy, page = 1, limit = 10 } = req.query;
+
+        // pagination
+        const skip = (page - 1) * limit;
 
         // filter
         const where = {};
@@ -19,8 +22,14 @@ exports.getAllBookings = async (req, res, next) => {
             orderBy.id = "asc";
         }
 
-        const bookings = await bookingService.findAllBookings(where, orderBy);
-        res.status(200).json(bookings);
+        const [bookings, count] = await bookingService.findAllBookings(
+            where,
+            orderBy,
+            skip,
+            limit,
+        );
+
+        res.status(200).json({ bookings, count });
     } catch (error) {
         if (!error.status) {
             error.status = 500;

@@ -1,31 +1,36 @@
 const prisma = require("../lib/prisma");
 
-exports.findAllBookings = async (where, orderBy) => {
-    return await prisma.booking.findMany({
-        where,
-        orderBy,
-        select: {
-            id: true,
-            createdAt: true,
-            startDate: true,
-            endDate: true,
-            numNights: true,
-            numGuests: true,
-            status: true,
-            totalPrice: true,
-            cabin: {
-                select: {
-                    name: true,
+exports.findAllBookings = async (where, orderBy, skip, limit) => {
+    return await Promise.all([
+        prisma.booking.findMany({
+            where,
+            orderBy,
+            skip,
+            take: Number(limit),
+            select: {
+                id: true,
+                createdAt: true,
+                startDate: true,
+                endDate: true,
+                numNights: true,
+                numGuests: true,
+                status: true,
+                totalPrice: true,
+                cabin: {
+                    select: {
+                        name: true,
+                    },
+                },
+                guest: {
+                    select: {
+                        fullName: true,
+                        email: true,
+                    },
                 },
             },
-            guest: {
-                select: {
-                    fullName: true,
-                    email: true,
-                },
-            },
-        },
-    });
+        }),
+        prisma.booking.count({ where }),
+    ]);
 };
 
 exports.deleteAllBookings = async () => {
