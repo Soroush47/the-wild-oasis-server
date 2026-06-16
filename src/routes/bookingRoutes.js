@@ -5,12 +5,19 @@ const router = express.Router();
 // GET all booking
 router.get("/", bookingController.getAllBookings);
 
-//Delete all bookings
+// Delete all bookings
 router.delete("/delete-all", bookingController.deleteAllBookings);
 
-//Create many bookings
+// Create many bookings
 router.post("/create-many", bookingController.createManyBookings);
 
+// Get one booking
 router.get("/:id", bookingController.getBooking);
+
+// Update Booking
+router.patch("/:id", bookingController.updateBooking);
+
+// Delete Booking
+router.delete("/:id", bookingController.deteleBooking);
 
 module.exports = router;

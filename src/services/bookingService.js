@@ -83,3 +83,18 @@ exports.getBooking = async id => {
         },
     });
 };
+
+exports.updateBooking = async (id, obj) => {
+    return await prisma.booking.update({
+        where: { id },
+        data: obj,
+    });
+};
+
+exports.deleteBooking = async id => {
+    return await prisma.booking.delete({
+        where: {
+            id,
+        },
+    });
+};

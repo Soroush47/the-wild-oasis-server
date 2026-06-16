@@ -74,3 +74,39 @@ exports.getBooking = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.updateBooking = async (req, res, next) => {
+    const bookingId = parseInt(req.params.id);
+    const obj = req.body;
+    try {
+        const updatedBooking = await bookingService.updateBooking(bookingId, obj);
+        res.status(200).json(updatedBooking);
+    } catch (error) {
+        if (error.code === "P2025") {
+            // Record not found
+            error.status = 404;
+        } else {
+            error.status = 400;
+        }
+        next(error);
+    }
+};
+
+exports.deteleBooking = async (req, res, next) => {
+    const id = parseInt(req.params.id);
+    try {
+        const deletedBooking = await bookingService.deleteBooking(id);
+        res.status(200).json({
+            message: `Booking with ID ${id} deleted successfully.`,
+            deletedBooking,
+        });
+    } catch (error) {
+        if (error.code === "P2025") {
+            // Record not found
+            error.status = 404;
+        } else {
+            error.status = 400;
+        }
+        next(error);
+    }
+};
