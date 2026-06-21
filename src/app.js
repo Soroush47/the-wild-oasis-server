@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { PrismaClient } = require("@prisma/client");
+const cookieParser = require("cookie-parser");
 
 // Import routes
 const cabinRoutes = require("./routes/cabinRoutes");
@@ -8,12 +8,14 @@ const guestRoutes = require("./routes/guestRoutes");
 const settingRoutes = require("./routes/settingRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const idsRoutes = require("./routes/idsRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 // Custom middleware for delay
 app.use(async (req, res, next) => {
@@ -32,6 +34,7 @@ app.use("/api/guests", guestRoutes);
 app.use("/api/settings", settingRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/cabinIds-guestIds", idsRoutes);
+app.use("/api/auth", authRoutes);
 
 // Catch-all for 404 Not Found
 app.use((req, res, next) => {
