@@ -2,6 +2,10 @@ const prisma = require("../lib/prisma");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+// Create tokens
+const ACCESS_TOKEN_EXPIRY = "1h"; // 3600 seconds
+const REFRESH_TOKEN_EXPIRY = "7d";
+
 exports.signupUser = async (email, password, fullName) => {
     const existingUser = await prisma.user.findUnique({
         where: { email },
@@ -32,7 +36,7 @@ exports.signupUser = async (email, password, fullName) => {
 };
 
 exports.loginUser = async (email, password) => {
-    const user = prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
         where: {
             email,
         },
@@ -52,17 +56,66 @@ exports.loginUser = async (email, password) => {
         throw error;
     }
 
-    const token = jwt.sign(
-        {
-            userId: user.id,
-            email: user.email,
-        },
+    // Access Token
+    const accessToken = jwt.sign(
+        { userId: user.id, email: user.email },
         process.env.JWT_SECRET,
-        { expiresIn: "7d" },
+        { expiresIn: ACCESS_TOKEN_EXPIRY },
     );
 
+    // Refresh Token
+    const refreshToken = jwt.sign({ userId: user.id }, process.env.REFRESH_TOKEN_SECRET, {
+        expiresIn: REFRESH_TOKEN_EXPIRY,
+    });
+
+    const expiresIn = 3600;
+    const expiresAt = Math.floor(Date.now() / 1000) + expiresIn;
+
+    const { password: userPassword, ...safeUser } = user;
+
     return {
-        token,
-        user: { id: user.id, email: user.email, fullName: user.fullName },
+        user: {
+            ...safeUser,
+            role: "authenticated",
+        },
+        session: {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            expires_at: expiresAt,
+            expires_in: expiresIn,
+            token_type: "bearer",
+        },
     };
+};
+
+exports.refreshToken = async token => {
+    try {
+        const payload = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+
+        const newAccessToken = jwt.sign(
+            { userId: payload.id, email: payload.email },
+            process.env.JWT_SECRET,
+            { expiresIn: ACCESS_TOKEN_EXPIRY },
+        );
+
+        const newRefreshToken = jwt.sign(
+            { userId: payload.id },
+            process.env.REFRESH_TOKEN_SECRET,
+            {
+                expiresIn: REFRESH_TOKEN_EXPIRY,
+            },
+        );
+
+        return {
+            session: {
+                access_token: newAccessToken,
+                refresh_token: newRefreshToken,
+                expires_at: Math.floor(Date.now() / 1000) + 3600,
+                expires_in: 3600,
+                token_type: "bearer",
+            },
+        };
+    } catch (err) {
+        throw new Error("Invalid or expired refresh token");
+    }
 };

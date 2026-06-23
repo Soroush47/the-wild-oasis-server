@@ -26,12 +26,43 @@ exports.loginUser = async (req, res, next) => {
         const { email, password } = req.body;
         const result = await authService.loginUser(email, password);
 
-        res.status(200).json({
-            success: true,
-            message: "Login successful",
-            data: result,
-        });
+        res.status(200).json(result);
     } catch (error) {
         next(error);
     }
+};
+
+exports.refreshToken = async (req, res, next) => {
+    try {
+        const { refresh_token } = req.body;
+
+        if (!refresh_token) {
+            return res.status(400).json({ message: "Refresh token is required" });
+        }
+
+        const data = await authService.refreshToken(refresh_token);
+        res.status(200).json(data);
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getMe = async (req, res) => {
+  try {
+    const { userId, email } = req.user;
+    
+    res.status(200).json({
+      success: true,
+      user: {
+        id: userId,
+        email: email
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message
+    });
+  }
 };
