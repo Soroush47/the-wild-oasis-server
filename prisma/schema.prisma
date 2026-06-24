@@ -1,15 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  // url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 model Cabin {
@@ -25,36 +20,34 @@ model Cabin {
 }
 
 model Guest {
-  id           Int       @id @default(autoincrement())
-  createdAt    DateTime  @default(now())
-  fullName     String
-  email        String    @unique
-  nationalID   String
-  nationality  String
-  countryFlag  String
-  bookings     Booking[]
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  fullName    String
+  email       String    @unique
+  nationalID  String
+  nationality String
+  countryFlag String
+  bookings    Booking[]
 }
 
 model Booking {
-  id            Int      @id @default(autoincrement())
-  createdAt     DateTime @default(now())
-  startDate     DateTime
-  endDate       DateTime
-  numNights     Int
-  numGuests     Int
-  cabinPrice    Int
-  extrasPrice   Int
-  totalPrice    Int
-  status        String
-  hasBreakfast  Boolean
-  isPaid        Boolean
-  observations  String
-  
-  cabinId       Int
-  cabin         Cabin    @relation(fields: [cabinId], references: [id])
-  
-  guestId       Int
-  guest         Guest    @relation(fields: [guestId], references: [id])
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  startDate    DateTime
+  endDate      DateTime
+  numNights    Int
+  numGuests    Int
+  cabinPrice   Int
+  extrasPrice  Int
+  totalPrice   Int
+  status       String
+  hasBreakfast Boolean
+  isPaid       Boolean
+  observations String
+  cabinId      Int
+  guestId      Int
+  cabin        Cabin    @relation(fields: [cabinId], references: [id])
+  guest        Guest    @relation(fields: [guestId], references: [id])
 }
 
 model Setting {
@@ -69,6 +62,7 @@ model User {
   id        String   @id @default(uuid())
   fullName  String
   email     String   @unique
-  password  String   
+  password  String
   createdAt DateTime @default(now())
+  avatar    String?
 }

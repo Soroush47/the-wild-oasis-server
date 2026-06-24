@@ -24,6 +24,7 @@ exports.signupUser = async (req, res, next) => {
 exports.loginUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
+        console.log({ email, password });
         const result = await authService.loginUser(email, password);
 
         res.status(200).json(result);
@@ -48,21 +49,19 @@ exports.refreshToken = async (req, res, next) => {
 };
 
 exports.getMe = async (req, res) => {
-  try {
-    const { userId, email } = req.user;
-    
-    res.status(200).json({
-      success: true,
-      user: {
-        id: userId,
-        email: email
-      }
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message
-    });
-  }
+    try {
+        const { userId, email } = req.user;
+        const user = await authService.getMe(userId);
+
+        res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server error",
+            error: error.message,
+        });
+    }
 };
