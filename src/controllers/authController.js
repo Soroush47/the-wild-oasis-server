@@ -65,3 +65,20 @@ exports.getMe = async (req, res) => {
         });
     }
 };
+
+exports.updateUser = async (req, res, next) => {
+    const id = req.params.id;
+    const data = req.body;
+    try {
+        const updatedUser = await authService.updateUser(id, data);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        if (error.code === "P2025") {
+            // Record not found
+            error.status = 404;
+        } else {
+            error.status = 400;
+        }
+        next(error);
+    }
+};

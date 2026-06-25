@@ -138,3 +138,20 @@ exports.getMe = async id => {
         role: "authenticated",
     };
 };
+
+exports.updateUser = async (id, data) => {
+    const hashedPassword = data.password ? await bcrypt.hash(data.password, 10) : null;
+
+    const newData = hashedPassword ? { password: hashedPassword } : data;
+    const user = await prisma.user.update({
+        where: { id },
+        data: newData,
+    });
+
+    const { password, ...safeUser } = user;
+
+    return {
+        ...safeUser,
+        role: "authenticated",
+    };
+};

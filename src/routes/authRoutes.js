@@ -11,4 +11,6 @@ router.post("/refresh", authController.refreshToken);
 
 router.get("/me", authMiddleware, authController.getMe);
 
+router.patch("/update/:id", authController.updateUser);
+
 module.exports = router;
