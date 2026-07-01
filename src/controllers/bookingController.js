@@ -110,3 +110,27 @@ exports.deteleBooking = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.getBookingsAfterDate = async (req, res, next) => {
+    const date = req.query;
+    const queryDate = new Date(date.queryDate);
+    const today = new Date(date.today);
+    try {
+        const bookings = await bookingService.getBookingsAfterDate(queryDate, today);
+        res.status(200).json(bookings);
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getStaysAfterDate = async (req, res, next) => {
+    const date = req.query;
+    const queryDate = new Date(date.queryDate);
+    const today = new Date(date.today);
+    try {
+        const bookings = await bookingService.getStaysAfterDate(queryDate, today);
+        res.status(200).json(bookings);
+    } catch (error) {
+        next(error);
+    }
+};

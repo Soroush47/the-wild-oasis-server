@@ -11,6 +11,12 @@ router.delete("/delete-all", bookingController.deleteAllBookings);
 // Create many bookings
 router.post("/create-many", bookingController.createManyBookings);
 
+// Get bookings after date
+router.get("/after-date", bookingController.getBookingsAfterDate);
+
+// Get bookings after date
+router.get("/stays", bookingController.getStaysAfterDate);
+
 // Get one booking
 router.get("/:id", bookingController.getBooking);
 

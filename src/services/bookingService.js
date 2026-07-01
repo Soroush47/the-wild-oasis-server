@@ -98,3 +98,50 @@ exports.deleteBooking = async id => {
         },
     });
 };
+
+exports.getBookingsAfterDate = async (queryDate, today) => {
+    return await prisma.booking.findMany({
+        where: {
+            createdAt: {
+                gte: queryDate,
+                lte: today,
+            },
+        },
+        select: {
+            createdAt: true,
+            totalPrice: true,
+            extrasPrice: true,
+        },
+    });
+};
+
+exports.getStaysAfterDate = async (queryDate, today) => {
+    return await prisma.booking.findMany({
+        where: {
+            startDate: {
+                gte: queryDate,
+                lte: today,
+            },
+        },
+        select: {
+            id: true,
+            createdAt: true,
+            startDate: true,
+            endDate: true,
+            numNights: true,
+            numGuests: true,
+            status: true,
+            cabinPrice: true,
+            extrasPrice: true,
+            totalPrice: true,
+            hasBreakfast: true,
+            observations: true,
+            isPaid: true,
+            guest: {
+                select: {
+                    fullName: true,
+                },
+            },
+        },
+    });
+};
