@@ -127,8 +127,31 @@ exports.getStaysAfterDate = async (req, res, next) => {
     const date = req.query;
     const queryDate = new Date(date.queryDate);
     const today = new Date(date.today);
+    const endOfToday = new Date(today);
+    endOfToday.setUTCHours(23, 59, 59, 999);
     try {
-        const bookings = await bookingService.getStaysAfterDate(queryDate, today);
+        const bookings = await bookingService.getStaysAfterDate(queryDate, endOfToday);
+        res.status(200).json(bookings);
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getStaysTodayActivity = async (req, res, next) => {
+    const { today } = req.query;
+    const startOfToday = new Date(today);
+    startOfToday.setUTCHours(0, 0, 0, 0);
+
+    const endOfToday = new Date(today);
+    endOfToday.setUTCHours(23, 59, 59, 999);
+
+    console.log("controller");
+    console.log({ today, startOfToday, endOfToday });
+    try {
+        const bookings = await bookingService.getStaysTodayActivity(
+            startOfToday,
+            endOfToday,
+        );
         res.status(200).json(bookings);
     } catch (error) {
         next(error);

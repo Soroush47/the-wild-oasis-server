@@ -52,20 +52,7 @@ exports.createManyBookings = async data => {
 exports.getBooking = async id => {
     return await prisma.booking.findUnique({
         where: { id },
-        select: {
-            id: true,
-            createdAt: true,
-            startDate: true,
-            endDate: true,
-            numNights: true,
-            numGuests: true,
-            status: true,
-            cabinPrice: true,
-            extrasPrice: true,
-            totalPrice: true,
-            hasBreakfast: true,
-            observations: true,
-            isPaid: true,
+        include: {
             cabin: {
                 select: {
                     name: true,
@@ -115,33 +102,56 @@ exports.getBookingsAfterDate = async (queryDate, today) => {
     });
 };
 
-exports.getStaysAfterDate = async (queryDate, today) => {
+exports.getStaysAfterDate = async (queryDate, endOfToday) => {
+    console.log({ queryDate, endOfToday });
     return await prisma.booking.findMany({
         where: {
             startDate: {
                 gte: queryDate,
-                lte: today,
+                lte: endOfToday,
             },
         },
-        select: {
-            id: true,
-            createdAt: true,
-            startDate: true,
-            endDate: true,
-            numNights: true,
-            numGuests: true,
-            status: true,
-            cabinPrice: true,
-            extrasPrice: true,
-            totalPrice: true,
-            hasBreakfast: true,
-            observations: true,
-            isPaid: true,
+        include: {
             guest: {
                 select: {
                     fullName: true,
                 },
             },
+        },
+    });
+};
+
+exports.getStaysTodayActivity = async (startOfToday, endOfToday) => {
+    return await prisma.booking.findMany({
+        where: {
+            OR: [
+                {
+                    status: "unconfirmed",
+                    startDate: {
+                        gte: startOfToday,
+                        lte: endOfToday,
+                    },
+                },
+                {
+                    status: "checked-in",
+                    endDate: {
+                        gte: startOfToday,
+                        lte: endOfToday,
+                    },
+                },
+            ],
+        },
+        include: {
+            guest: {
+                select: {
+                    fullName: true,
+                    nationality: true,
+                    countryFlag: true,
+                },
+            },
+        },
+        orderBy: {
+            createdAt: "asc",
         },
     });
 };

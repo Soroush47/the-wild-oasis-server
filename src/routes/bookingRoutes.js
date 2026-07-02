@@ -14,8 +14,11 @@ router.post("/create-many", bookingController.createManyBookings);
 // Get bookings after date
 router.get("/after-date", bookingController.getBookingsAfterDate);
 
-// Get bookings after date
-router.get("/stays", bookingController.getStaysAfterDate);
+// Get stays after date
+router.get("/stays-after-date", bookingController.getStaysAfterDate);
+
+// Get stays today activity
+router.get("/stays-today-activity", bookingController.getStaysTodayActivity);
 
 // Get one booking
 router.get("/:id", bookingController.getBooking);
