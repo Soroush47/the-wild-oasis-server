@@ -2,7 +2,8 @@
     "scripts": {
         "seed": "tsx prisma/seed.ts",
         "start": "node server.js",
-        "dev": "nodemon server.js"
+        "dev": "nodemon server.js",
+        "postinstall": "prisma generate"
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"
@@ -15,7 +16,6 @@
         "dotenv": "^17.4.2",
         "express": "^5.2.1",
         "jsonwebtoken": "^9.0.3",
-        "mongoose": "^9.6.2",
         "pg": "^8.21.0"
     },
     "devDependencies": {
