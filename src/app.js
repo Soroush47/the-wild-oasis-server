@@ -13,12 +13,7 @@ const authRoutes = require("./routes/authRoutes");
 const app = express();
 
 // Middleware
-app.use(
-    cors({
-        origin: ["http://localhost:5173", "https://soroush-the-wild-oasis.vercel.app"],
-        credentials: true,
-    }),
-);
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
