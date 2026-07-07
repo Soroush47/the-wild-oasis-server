@@ -1,15 +1,16 @@
 const express = require("express");
 const bookingController = require("../controllers/bookingController");
+const { preventDemoChanges } = require("../middlewares/preventDemoChanges");
 const router = express.Router();
 
 // GET all booking
 router.get("/", bookingController.getAllBookings);
 
 // Delete all bookings
-router.delete("/delete-all", bookingController.deleteAllBookings);
+router.delete("/delete-all", preventDemoChanges, bookingController.deleteAllBookings);
 
 // Create many bookings
-router.post("/create-many", bookingController.createManyBookings);
+router.post("/create-many", preventDemoChanges, bookingController.createManyBookings);
 
 // Get bookings after date
 router.get("/after-date", bookingController.getBookingsAfterDate);
@@ -24,9 +25,9 @@ router.get("/stays-today-activity", bookingController.getStaysTodayActivity);
 router.get("/:id", bookingController.getBooking);
 
 // Update Booking
-router.patch("/:id", bookingController.updateBooking);
+router.patch("/:id", preventDemoChanges, bookingController.updateBooking);
 
 // Delete Booking
-router.delete("/:id", bookingController.deteleBooking);
+router.delete("/:id", preventDemoChanges, bookingController.deteleBooking);
 
 module.exports = router;
