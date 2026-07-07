@@ -21,7 +21,7 @@ exports.deleteAllGuests = async (req, res, next) => {
 };
 
 exports.createManyGuests = async (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
     try {
         const result = await guestService.createManyGuests(req.body);
         res.status(201).json({ message: `Successfully created ${result.count} guests.` });

@@ -5,7 +5,7 @@ exports.findAllSettings = async () => {
 };
 
 exports.updateSettings = async data => {
-    console.log(data);
+    // console.log(data);
     return await prisma.setting.update({
         where: { id: 1 },
         data,

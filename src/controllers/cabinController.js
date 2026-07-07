@@ -62,7 +62,7 @@ exports.deleteCabin = async (req, res, next) => {
         return res.status(400).json({ message: "Invalid cabin ID" });
     }
     try {
-        console.log({ cabinId });
+        // console.log({ cabinId });
         const deletedCabin = await cabinService.deleteCabin(cabinId);
         res.status(200).json({
             message: `Cabin with ID ${cabinId} deleted successfully.`,

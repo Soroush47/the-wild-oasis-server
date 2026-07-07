@@ -145,8 +145,8 @@ exports.getStaysTodayActivity = async (req, res, next) => {
     const endOfToday = new Date(today);
     endOfToday.setUTCHours(23, 59, 59, 999);
 
-    console.log("controller");
-    console.log({ today, startOfToday, endOfToday });
+    // console.log("controller");
+    // console.log({ today, startOfToday, endOfToday });
     try {
         const bookings = await bookingService.getStaysTodayActivity(
             startOfToday,

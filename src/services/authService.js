@@ -56,6 +56,8 @@ exports.loginUser = async (email, password) => {
         throw error;
     }
 
+    // console.log({ user });
+
     // Access Token
     const accessToken = jwt.sign(
         { userId: user.id, email: user.email },
@@ -92,14 +94,25 @@ exports.refreshToken = async token => {
     try {
         const payload = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
 
+        const user = await prisma.user.findUnique({
+            where: {
+                id: payload.userId,
+            },
+        });
+
+        if (!user) {
+            throw new Error("User not found");
+        }
+        // console.log("refresh token", { user });
+
         const newAccessToken = jwt.sign(
-            { userId: payload.id, email: payload.email },
+            { userId: user.id, email: user.email },
             process.env.JWT_SECRET,
             { expiresIn: ACCESS_TOKEN_EXPIRY },
         );
 
         const newRefreshToken = jwt.sign(
-            { userId: payload.id },
+            { userId: user.id },
             process.env.REFRESH_TOKEN_SECRET,
             {
                 expiresIn: REFRESH_TOKEN_EXPIRY,

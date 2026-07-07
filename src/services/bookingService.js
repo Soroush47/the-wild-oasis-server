@@ -103,7 +103,7 @@ exports.getBookingsAfterDate = async (queryDate, today) => {
 };
 
 exports.getStaysAfterDate = async (queryDate, endOfToday) => {
-    console.log({ queryDate, endOfToday });
+    // console.log({ queryDate, endOfToday });
     return await prisma.booking.findMany({
         where: {
             startDate: {
